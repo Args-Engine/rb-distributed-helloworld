@@ -6,7 +6,8 @@ import messages
 class Client:
     def __init__(self, addr: str, middleware):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((addr, ap.PORT))
+        while self.sock.connect_ex((addr, ap.PORT)) != 0:
+            print("Connection failed, host not up!")
 
         self.established = False
         self.middleware = middleware

@@ -11,7 +11,7 @@ Message Structure:
 class Available:
     id = b'~Available'
     id_len = len(id)
-    msg_len = id_len + ap.INT_LEN
+    msg_len = ap.INT_LEN + id_len + ap.INT_LEN
 
     def __init__(self, available):
         self.available = available
@@ -25,11 +25,11 @@ class Available:
     def is_this(data: bytes):
 
         # Check if the bytes are the right length
-        if len(data) < ap.INT_LEN + Available.msg_len:
+        if len(data) < Available.msg_len:
             return False
 
         # Decode bytes
-        msz = int.from_bytes(data[:ap.INT_LEN], byteorder=ap.BYTE_ORDER, signed=ap.SIGNED) - ap.INT_LEN
+        msz = int.from_bytes(data[:ap.INT_LEN], byteorder=ap.BYTE_ORDER, signed=ap.SIGNED)
         msg = data[ap.INT_LEN:msz + ap.INT_LEN]
 
         # Check if decoded length is correct
@@ -46,7 +46,7 @@ class Available:
     @staticmethod
     def from_sendable(data: bytes):
         if Available.is_this(data):
-            avail = int.from_bytes(data[ap.INT_LEN + Available.id_len:ap.INT_LEN],
+            avail = int.from_bytes(data[ap.INT_LEN + Available.id_len:ap.INT_LEN + Available.id_len+ap.INT_LEN],
                                    byteorder=ap.BYTE_ORDER, signed=ap.SIGNED)
             return Available(avail), True
         return None, False
